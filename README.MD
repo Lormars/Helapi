@@ -8,9 +8,9 @@ Yes, just like those HTTP request function on editors like VSCode and JetBrains 
 
 Currently it only support sending one api request per time.
 
-Only support GET and POST now.
-Only support configuring the POST body (in JSON) now. 
-No headers support now.
+Only support GET and POST now.  
+Only support configuring the POST body (in JSON) now.  
+No headers support now.  
 
 # Install
 Simply clone it, cd into it, and use your cargo to build it and put it into the PATH.
@@ -18,17 +18,15 @@ Simply clone it, cd into it, and use your cargo to build it and put it into the 
 # Format
 The format of your request should be JSON, like below:
 
-{
-	"target": "http://localhost:5555/books",
-	"method": "post",
-	"body": 
-		{
-		    "title": "ndss",
-			"author": "adsfsadf",
-			"publishYear": "1234"
-		 }
-
-	
+{  
+	"target": "http://localhost:5555/books",  
+	"method": "post",  
+	"body":  
+		{  
+		    "title": "ndss",  
+			"author": "adsfsadf",  
+			"publishYear": "1234"  
+		 }  
 }
 
 
