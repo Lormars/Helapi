@@ -18,6 +18,7 @@ Simply clone it, cd into it, and use your cargo to build it and put it into the 
 # Format
 The format of your request should be JSON, like below:
 
+```json
 {  
 	"target": "http://localhost:5555/books",  
 	"method": "post",  
@@ -28,5 +29,5 @@ The format of your request should be JSON, like below:
 			"publishYear": "1234"  
 		 }  
 }
-
+```
 
