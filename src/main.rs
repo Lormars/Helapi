@@ -9,9 +9,9 @@ mod error;
 #[derive(Debug, Deserialize, Serialize)]
 struct Request {
     method: String,
-    content_type: String,
+    content_type: Option<String>,
     target: String,
-    body: Value,
+    body: Option<Value>,
 }
 
 fn decouple_value(map: &Map<String, Value>) -> HashMap<String, String> {
@@ -25,14 +25,14 @@ fn decouple_value(map: &Map<String, Value>) -> HashMap<String, String> {
 async fn send_request(client: &Client, request: &Request) -> Result<Response, error::MyError> {
     match request.method.to_lowercase().as_str() {
         "get" => Ok(client.get(&request.target).send().await?),
-        "post" => match request.content_type.to_lowercase().as_str() {
+        "post" => match request.content_type.as_ref().expect("content type not found").to_lowercase().as_str() {
             "application/json" => Ok(client
                 .post(&request.target)
                 .json(&request.body)
                 .send()
                 .await?),
             "x-www-form-urlencoded" => {
-                if let Value::Object(ref map) = request.body {
+                if let Value::Object(ref map) = request.body.as_ref().expect("body not found") {
                     let form_data = decouple_value(map);
 
                     Ok(client.post(&request.target).form(&form_data).send().await?)
