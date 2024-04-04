@@ -1,6 +1,7 @@
 {
 	"target": "http://localhost:5555/books",
 	"method": "post",
+	"content_type": "application/json",
 	"body": 
 		{
 		    "title": "ndss",
@@ -9,5 +10,16 @@
 		 }
 
 	
+}
+
+{
+	"target": "http://localhost:3000/post/urlform",
+	"content_type": "x-www-form-urlencoded",
+	"method": "post",
+	"body": {
+		"name": "hello",
+		"age": 3
+	}
+		
 }
 
