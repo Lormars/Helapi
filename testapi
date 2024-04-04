@@ -1,0 +1,13 @@
+{
+	"target": "http://localhost:5555/books",
+	"method": "post",
+	"body": 
+		{
+		    "title": "ndss",
+			"author": "adsfsadf",
+			"publishYear": "1234"
+		 }
+
+	
+}
+
