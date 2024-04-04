@@ -20,14 +20,13 @@ The format of your request should be JSON, like below:
 
 ```json
 {
-	"target": "http://localhost:5555/books",
-	"method": "post",
-	"body":
-		{
-		    "title": "ndss",
-			"author": "adsfsadf",
-			"publishYear": "1234"
-		 }
+    "target": "http://localhost:5555/books",
+    "method": "post",
+    "body": {
+        "title": "ndss",
+        "author": "adsfsadf",
+        "publishYear": "1234"
+    }
 }
 ```
 
