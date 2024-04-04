@@ -2,9 +2,12 @@
 This is a dead simple script that can be used with [Helix Editor](https://github.com/helix-editor/helix).
 Its main purpose is to ease the workflow of testing APIs.
 
+# Usage
 To use it, simple select the request you want to send, pipe it using `|`, followed by the 
 command `helapi`. The response of the api will show underneath the request on your editor.
 Yes, just like those HTTP request function on editors like VSCode and JetBrains suite.
+
+If you did not select anything when pipe, it will return some sample templates for you to use.
 
 Currently it only support sending one api request per time.
 

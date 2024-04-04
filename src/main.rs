@@ -67,6 +67,34 @@ async fn handle_response(res: Response) {
     }
 }
 
+fn template() -> String {
+    r#"{
+	"target": "http://localhost:5555/books",
+	"method": "post",
+	"content_type": "application/json",
+	"body": 
+		{
+		    "title": "ndss",
+			"author": "adsfsadf",
+			"publishYear": "1234"
+		 }
+
+	
+}
+
+{
+	"target": "http://localhost:3000/post/urlform",
+	"content_type": "x-www-form-urlencoded",
+	"method": "post",
+	"body": {
+		"name": "hello",
+		"age": 3
+	}
+		
+}
+"#.to_string()
+}
+
 #[tokio::main]
 async fn main() {
     let mut input = String::new();
@@ -74,8 +102,14 @@ async fn main() {
         .read_to_string(&mut input)
         .expect("Stdin read error");
 
+    if input.is_empty() {
+        let temp = template();
+        println!("{temp}");
+        return;
+    }
+
     let v: Request = serde_json::from_str(&input).expect("Wrong JSON Format!");
-    dbg!(&v);
+    // dbg!(&v);
 
     let client = reqwest::Client::new();
 
