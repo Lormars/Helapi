@@ -60,7 +60,8 @@ async fn send_request(client: &Client, request: &Request) -> Result<Response, er
                 }
                 _ => Err(error::MyError::Syntax("Invalid content type".to_string())),
             }
-        }
+        },
+        "delete" => Ok(client.delete(&request.target).send().await?),
 
         _ => Err(error::MyError::Syntax(
             "Invalid method. Only support GET, POST, and PUT".to_string(),
