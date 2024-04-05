@@ -11,7 +11,7 @@ If you did not select anything when pipe, it will return some sample templates f
 
 Currently it only support sending one api request per time.
 
-Only support GET and POST now.  
+Only support GET, PUT, and POST now.  
 Only support configuring the POST body (in JSON) now. Note that even if you are 
 sending other format like `x-www-form-urlencoded`, you still need to use json format 
 to config, and specify your content type in `content_type`.  

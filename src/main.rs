@@ -25,26 +25,45 @@ fn decouple_value(map: &Map<String, Value>) -> HashMap<String, String> {
 async fn send_request(client: &Client, request: &Request) -> Result<Response, error::MyError> {
     match request.method.to_lowercase().as_str() {
         "get" => Ok(client.get(&request.target).send().await?),
-        "post" => match request.content_type.as_ref().expect("content type not found").to_lowercase().as_str() {
-            "application/json" => Ok(client
-                .post(&request.target)
+        "post" | "put" => {
+            let method = request.method.to_lowercase();
+            match request
+                .content_type
+                .as_ref()
+                .expect("content type not found")
+                .to_lowercase()
+                .as_str()
+            {
+                "application/json" => Ok(if method == "post" {
+                    client.post(&request.target)
+                } else {
+                    client.put(&request.target)
+                }
                 .json(&request.body)
                 .send()
                 .await?),
-            "x-www-form-urlencoded" => {
-                if let Value::Object(ref map) = request.body.as_ref().expect("body not found") {
-                    let form_data = decouple_value(map);
+                "x-www-form-urlencoded" => {
+                    if let Value::Object(ref map) = request.body.as_ref().expect("body not found") {
+                        let form_data = decouple_value(map);
 
-                    Ok(client.post(&request.target).form(&form_data).send().await?)
-                } else {
-                    Err(error::MyError::Syntax("Invalid body".to_string()))
+                        Ok(if method == "post" {
+                            client.post(&request.target)
+                        } else {
+                            client.put(&request.target)
+                        }
+                        .form(&form_data)
+                        .send()
+                        .await?)
+                    } else {
+                        Err(error::MyError::Syntax("Invalid body".to_string()))
+                    }
                 }
+                _ => Err(error::MyError::Syntax("Invalid content type".to_string())),
             }
-            _ => Err(error::MyError::Syntax("Invalid content type".to_string())),
-        },
+        }
 
         _ => Err(error::MyError::Syntax(
-            "Invalid method. Only support GET and POST".to_string(),
+            "Invalid method. Only support GET, POST, and PUT".to_string(),
         )),
     }
 }
@@ -92,7 +111,8 @@ fn template() -> String {
 	}
 		
 }
-"#.to_string()
+"#
+    .to_string()
 }
 
 #[tokio::main]
