@@ -1,4 +1,7 @@
-use reqwest::{Client, Error, Response};
+use reqwest::{
+    header, header::HeaderMap, header::HeaderName, header::HeaderValue, header::AUTHORIZATION,
+    Client, Response,
+};
 use serde::{Deserialize, Serialize};
 use serde_json::{to_string_pretty, Map, Value};
 use std::collections::HashMap;
@@ -10,6 +13,8 @@ mod error;
 struct Request {
     method: String,
     content_type: Option<String>,
+    authorization: Option<String>,
+    headers: Option<Value>,
     target: String,
     body: Option<Value>,
 }
@@ -60,7 +65,7 @@ async fn send_request(client: &Client, request: &Request) -> Result<Response, er
                 }
                 _ => Err(error::MyError::Syntax("Invalid content type".to_string())),
             }
-        },
+        }
         "delete" => Ok(client.delete(&request.target).send().await?),
 
         _ => Err(error::MyError::Syntax(
@@ -116,6 +121,23 @@ fn template() -> String {
     .to_string()
 }
 
+fn add_headers(v: &Request, headers: &mut HeaderMap) {
+    match v.headers.as_ref() {
+        Some(header_json) => {
+            let header_map: HashMap<String, String> =
+                decouple_value(header_json.as_object().expect("Header value wrong"));
+            for (key, value) in header_map {
+                let header_name =
+                    HeaderName::from_bytes(key.as_bytes()).expect("Invalid header name");
+                let header_value =
+                    HeaderValue::from_bytes(value.as_bytes()).expect("Invalid header value");
+                headers.insert(header_name, header_value);
+            }
+        }
+        None => {}
+    }
+}
+
 #[tokio::main]
 async fn main() {
     let mut input = String::new();
@@ -129,11 +151,27 @@ async fn main() {
         return;
     }
 
+
     let v: Request = serde_json::from_str(&input).expect("Wrong JSON Format!");
-    // dbg!(&v);
+    
 
-    let client = reqwest::Client::new();
+    let mut headers = header::HeaderMap::new();
 
+    //add authorization
+    if let Some(token) = v.authorization.as_ref() {
+        headers.insert(AUTHORIZATION, token.parse().expect("token error"));
+    }
+
+    //add headers
+    add_headers(&v, &mut headers);
+
+    //build client
+    let client = reqwest::Client::builder()
+        .default_headers(headers)
+        .build()
+        .expect("client build error");
+
+    //print original request
     println!("{input}");
 
     match send_request(&client, &v).await {
