@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{to_string_pretty, Map, Value};
 use std::collections::HashMap;
 use std::io::Read;
+use std::env;
 
 mod error;
 
@@ -143,16 +144,33 @@ fn add_headers(v: &Request, headers: &mut HeaderMap) {
 
 #[tokio::main]
 async fn main() {
+
+    let args: Vec<String> = env::args().collect();
+
+    //check flag
+    
+    let mut t_flag = false;
+
+    for arg in args.iter() {
+        match arg.as_str() {
+            "-t" => t_flag = true,
+            _ => {}
+        }
+    }
+    
+    if t_flag {
+        let temp = template();
+        println!("{temp}");
+        return;
+    }
+
+    //take input
+    
     let mut input = String::new();
     std::io::stdin()
         .read_to_string(&mut input)
         .expect("Stdin read error");
 
-    if input.is_empty() {
-        let temp = template();
-        println!("{temp}");
-        return;
-    }
 
 
     let v: Request = serde_json::from_str(&input).expect("Wrong JSON Format!");

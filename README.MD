@@ -7,7 +7,6 @@ To use it, simple select the request you want to send, pipe it using `|`, follow
 command `helapi`. The response of the api will show underneath the request on your editor.
 Yes, just like those HTTP request function on editors like VSCode and JetBrains suite.
 
-If you did not select anything when pipe, it will return some sample templates for you to use.
 
 Currently it only support sending one api request per time.
 
@@ -17,6 +16,9 @@ sending other format like `x-www-form-urlencoded`, you still need to use json fo
 to config, and specify your content type in `content_type`.  
 
 Note this tool is case-sensitive. So "authorization" is not equal to "Authorization".
+
+Lastly, for now it has only one command-line argument: `-t` flag will return some 
+sample templates for you to use.
 
 # Install
 Simply clone it, cd into it, and use your cargo to build it and put it into the PATH.
