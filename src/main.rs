@@ -5,8 +5,8 @@ use reqwest::{
 use serde::{Deserialize, Serialize};
 use serde_json::{to_string_pretty, Map, Value};
 use std::collections::HashMap;
-use std::io::Read;
 use std::env;
+use std::io::Read;
 
 mod error;
 
@@ -76,21 +76,23 @@ async fn send_request(client: &Client, request: &Request) -> Result<Response, er
 }
 
 async fn handle_response(res: Response) {
+    let status = res.status();
     let text_result = res.text().await;
+
+    println!("----------result----------\n");
+    println!("Response status: {}\n", status);
+
     match text_result {
-        Ok(text) => {
-            println!("----------result----------");
-            match serde_json::from_str::<Value>(&text) {
-                Ok(p) => match to_string_pretty(&p) {
-                    Ok(pretty) => println!("{}", pretty),
-                    Err(_) => println!("{text}"),
-                },
+        Ok(text) => match serde_json::from_str::<Value>(&text) {
+            Ok(p) => match to_string_pretty(&p) {
+                Ok(pretty) => println!("{}", pretty),
                 Err(_) => println!("{text}"),
-            }
-            println!("----------result----------");
-        }
+            },
+            Err(_) => println!("{text}"),
+        },
         Err(e) => println!("Error: {:?}", e),
     }
+    println!("----------result----------");
 }
 
 fn template() -> String {
@@ -144,11 +146,10 @@ fn add_headers(v: &Request, headers: &mut HeaderMap) {
 
 #[tokio::main]
 async fn main() {
-
     let args: Vec<String> = env::args().collect();
 
     //check flag
-    
+
     let mut t_flag = false;
 
     for arg in args.iter() {
@@ -157,7 +158,7 @@ async fn main() {
             _ => {}
         }
     }
-    
+
     if t_flag {
         let temp = template();
         println!("{temp}");
@@ -165,16 +166,13 @@ async fn main() {
     }
 
     //take input
-    
+
     let mut input = String::new();
     std::io::stdin()
         .read_to_string(&mut input)
         .expect("Stdin read error");
 
-
-
     let v: Request = serde_json::from_str(&input).expect("Wrong JSON Format!");
-    
 
     let mut headers = header::HeaderMap::new();
 
