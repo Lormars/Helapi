@@ -94,19 +94,22 @@ async fn handle_response(res: Response) {
 
 fn template() -> String {
     r#"{
-	"target": "http://localhost:5555/books",
+	"target": "https://simple-books-api.glitch.me/orders",
 	"method": "post",
 	"content_type": "application/json",
+	"authorization": "Bearer 2586943e89d9fee22379e16ec81470ac9a17292fa155a96d9a98be7da7412c74",
+	"headers": {
+		"foo": "bar",
+		"foo2": "bar2"
+	},
 	"body": 
 		{
-		    "title": "ndss",
-			"author": "adsfsadf",
-			"publishYear": "1234"
+		    "bookId": "1",
+			"clientEmail": "ndss"
 		 }
 
 	
 }
-
 {
 	"target": "http://localhost:3000/post/urlform",
 	"content_type": "x-www-form-urlencoded",

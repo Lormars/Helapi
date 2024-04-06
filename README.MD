@@ -34,11 +34,10 @@ The format of your request should be JSON, like below:
 		"foo": "bar",
 		"foo2": "bar2"
 	},
-	"body": 
-		{
-		    "bookId": "1",
-			"clientEmail": "ndss"
-		 }
+	"body": {
+		"bookId": "1",
+		"clientEmail": "ndss"
+	}
 
 	
 }
