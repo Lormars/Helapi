@@ -127,6 +127,19 @@ fn template() -> String {
     .to_string()
 }
 
+fn react_template() -> String {
+    r#"import React from 'react'
+
+const page = () => {
+    return (
+        <div>page</div>
+    )
+}
+
+export default page
+    "#.to_string()
+}
+
 fn add_headers(v: &Request, headers: &mut HeaderMap) {
     match v.headers.as_ref() {
         Some(header_json) => {
@@ -144,23 +157,35 @@ fn add_headers(v: &Request, headers: &mut HeaderMap) {
     }
 }
 
+fn remove_control_characters(s: &str) -> String {
+    s.chars()
+     .filter(|c| !c.is_control())
+     .collect()
+}
+
 #[tokio::main]
 async fn main() {
     let args: Vec<String> = env::args().collect();
 
     //check flag
 
-    let mut t_flag = false;
+    let mut t_flag = false; //api template
+    let mut r_flag = false; //react template
 
     for arg in args.iter() {
         match arg.as_str() {
             "-t" => t_flag = true,
-            _ => {}
+            "-r" => r_flag = true,
+             _   => {}
         }
     }
 
     if t_flag {
         let temp = template();
+        println!("{temp}");
+        return;
+    } else if r_flag {
+        let temp = react_template();
         println!("{temp}");
         return;
     }
@@ -172,7 +197,8 @@ async fn main() {
         .read_to_string(&mut input)
         .expect("Stdin read error");
 
-    let v: Request = serde_json::from_str(&input).expect("Wrong JSON Format!");
+    let cleaned_input = remove_control_characters(input.as_str());
+    let v: Request = serde_json::from_str(&cleaned_input).expect("Wrong JSON Format!");
 
     let mut headers = header::HeaderMap::new();
 

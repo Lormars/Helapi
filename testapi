@@ -1,12 +1,14 @@
 {
-	"target": "http://localhost:5555/books",
+	"target": "http://localhost:4000",
 	"method": "post",
 	"content_type": "application/json",
 	"body": 
 		{
-		    "title": "ndss",
-			"author": "adsfsadf",
-			"publishYear": "1234"
+		    "query": "query Example {
+				games {
+					title
+				}
+			}"
 		 }
 
 	
