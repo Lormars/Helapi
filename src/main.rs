@@ -140,6 +140,22 @@ export default page
     "#.to_string()
 }
 
+fn html_template() -> String {
+    r#"<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>HTML 5 Boilerplate</title>
+  </head>
+  <body>
+  </body>
+</html>
+    "#.to_string()   
+}
+
+
 fn add_headers(v: &Request, headers: &mut HeaderMap) {
     match v.headers.as_ref() {
         Some(header_json) => {
@@ -171,11 +187,13 @@ async fn main() {
 
     let mut t_flag = false; //api template
     let mut r_flag = false; //react template
+    let mut h_flag = false; //html template
 
     for arg in args.iter() {
         match arg.as_str() {
             "-t" => t_flag = true,
             "-r" => r_flag = true,
+            "-h" => h_flag = true,
              _   => {}
         }
     }
@@ -186,6 +204,10 @@ async fn main() {
         return;
     } else if r_flag {
         let temp = react_template();
+        println!("{temp}");
+        return;
+    } else if h_flag {
+        let temp = html_template();
         println!("{temp}");
         return;
     }

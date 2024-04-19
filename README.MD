@@ -14,7 +14,10 @@ Only support GET, PUT, DELETE, and POST now.
 Only support configuring the body in JSON now. Note that even if you are 
 sending other format like `x-www-form-urlencoded`, you still need to use json format 
 to config, and specify your content type in `content_type`.  
-For graphql, now only supports simple query, as shown below.  
+This tool supports GraphQL queries as shown below. Note even though the graphql queries
+below are not valid json (the red part) per-se due to newline in the query string, I decide to keep it that 
+way and only parse the query string to get rid of these newline characters automatically later for better
+readability. So you can don't need to worry these.
 
 Note this tool is case-sensitive. So "authorization" is not equal to "Authorization".
 
@@ -72,4 +75,29 @@ The format of your request should be JSON, like below:
 	
 }
 
+{
+	"target": "http://localhost:4000",
+	"content_type": "application/json",
+	"method": "post",
+	"body": {
+		"query": "mutation AddMutation($game: AddGameInput!) {
+				addGame(game: $game) {
+					id,
+					platform
+					}	
+					
+		
+		}",
+		"variables": {
+			"game": {
+				"title": "a new game",
+				"platform": ["ps5", "switch"]
+			}		
+		}
+			
+		
+		
+	}
+		
+}
 ```
