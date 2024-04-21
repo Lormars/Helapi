@@ -77,11 +77,19 @@ async fn send_request(client: &Client, request: &Request) -> Result<Response, er
 
 async fn handle_response(res: Response) {
     let status = res.status();
+    let headers = res.headers().to_owned();
     let text_result = res.text().await;
 
     println!("----------result----------\n");
     println!("Response status: {}\n", status);
-
+    headers.into_iter().for_each(|header| {
+        if let Some(headername) = header.0 {
+            print!("{}", headername);
+            println!(": {}", header.1.to_str().unwrap_or_default());
+        }
+    });
+    println!("");
+    
     match text_result {
         Ok(text) => match serde_json::from_str::<Value>(&text) {
             Ok(p) => match to_string_pretty(&p) {
@@ -137,7 +145,8 @@ const page = () => {
 }
 
 export default page
-    "#.to_string()
+    "#
+    .to_string()
 }
 
 fn html_template() -> String {
@@ -152,9 +161,9 @@ fn html_template() -> String {
   <body>
   </body>
 </html>
-    "#.to_string()   
+    "#
+    .to_string()
 }
-
 
 fn add_headers(v: &Request, headers: &mut HeaderMap) {
     match v.headers.as_ref() {
@@ -174,9 +183,7 @@ fn add_headers(v: &Request, headers: &mut HeaderMap) {
 }
 
 fn remove_control_characters(s: &str) -> String {
-    s.chars()
-     .filter(|c| !c.is_control())
-     .collect()
+    s.chars().filter(|c| !c.is_control()).collect()
 }
 
 #[tokio::main]
@@ -194,7 +201,7 @@ async fn main() {
             "-t" => t_flag = true,
             "-r" => r_flag = true,
             "-h" => h_flag = true,
-             _   => {}
+            _ => {}
         }
     }
 
